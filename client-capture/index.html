@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screen Mirror — Transmissor</title>
+  <style>
+    /* =====================================================================
+       Design System — variáveis globais de estilo
+       ===================================================================== */
+    :root {
+      --bg-primary: #0d0d14;
+      --bg-secondary: #13131f;
+      --bg-card: #1a1a2e;
+      --accent: #5865f2;
+      --accent-hover: #4752c4;
+      --accent-danger: #ed4245;
+      --accent-success: #57f287;
+      --text-primary: #ffffff;
+      --text-secondary: #b9bbbe;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --radius: 12px;
+      --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    /* Gradiente animado de fundo */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(88, 101, 242, 0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(87, 242, 135, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Cabeçalho */
+    header {
+      text-align: center;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    /* Card principal */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Preview da tela capturada */
+    .preview-wrapper {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--border);
+    }
+
+    #preview {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none; /* Oculto até o stream começar */
+    }
+
+    .preview-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .preview-placeholder .icon {
+      font-size: 2.5rem;
+      opacity: 0.4;
+    }
+
+    /* Botões */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(88, 101, 242, 0.4);
+    }
+
+    .btn-danger {
+      background: var(--accent-danger);
+      color: white;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #c0383b;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #btn-stop { display: none; }
+
+    /* Painel de status */
+    .status-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .status-label {
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-value {
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Indicador de status com dot animado */
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .dot.connected { background: var(--accent-success); box-shadow: 0 0 8px var(--accent-success); }
+    .dot.streaming { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1.5s infinite; }
+    .dot.error { background: var(--accent-danger); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .peer-id-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      word-break: break-all;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">📡</div>
+        <h1>Screen Mirror</h1>
+      </div>
+      <p class="subtitle">Página Transmissora (Master) — compartilhe sua tela</p>
+    </header>
+
+    <div class="card">
+      <!-- Preview da captura de tela -->
+      <div class="preview-wrapper">
+        <video id="preview" autoplay muted playsinline></video>
+        <div class="preview-placeholder" id="placeholder">
+          <span class="icon">🖥️</span>
+          <span>A prévia da sua tela aparecerá aqui</span>
+        </div>
+      </div>
+
+      <!-- Botões de controle -->
+      <button id="btn-share" class="btn btn-primary">
+        🖥️ Compartilhar Tela
+      </button>
+      <button id="btn-stop" class="btn btn-danger">
+        ⏹️ Parar Transmissão
+      </button>
+    </div>
+
+    <!-- Painel de diagnóstico / status -->
+    <div class="status-panel">
+      <div class="status-row">
+        <span class="status-label">
+          <span class="dot" id="dot-socket"></span>
+          Socket.io
+        </span>
+        <span class="status-value" id="status-socket">Conectando...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">
+          <span class="dot" id="dot-peer"></span>
+          PeerJS
+        </span>
+        <span class="status-value" id="status-peer">Aguardando...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">
+          <span class="dot" id="dot-stream"></span>
+          Stream
+        </span>
+        <span class="status-value" id="status-stream">Inativo</span>
+      </div>
+      <div id="peer-id-box" class="peer-id-box"></div>
+    </div>
+  </div>
+
+  <!-- Socket.io client (CDN) -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <!-- PeerJS client (CDN) -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- Lógica de captura -->
+  <script src="capture.js"></script>
+</body>
+</html>

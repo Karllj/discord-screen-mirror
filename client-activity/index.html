@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screen Mirror — Discord Activity</title>
+  <style>
+    /* =====================================================================
+       Layout para Atividade do Discord (fullscreen iframe)
+       O <video> ocupa 100% do espaço disponível, sem scrollbars.
+       ===================================================================== */
+    :root {
+      --bg: #000;
+      --accent: #5865f2;
+      --text: #ffffff;
+      --text-muted: #b9bbbe;
+      --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
+    }
+
+    /* Container de overlay — fica sobre o vídeo */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: #0d0d14;
+      transition: opacity 0.5s ease;
+      z-index: 10;
+    }
+
+    #overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .overlay-icon {
+      font-size: 3rem;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .overlay-icon.stopped { animation: none; }
+
+    #overlay-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    #overlay-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 280px;
+    }
+
+    /* Indicador de status no canto */
+    #status-badge {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #status-badge.visible { opacity: 1; }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .badge-dot.live {
+      background: #ed4245;
+      box-shadow: 0 0 6px #ed4245;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Elemento de vídeo — ocupa tela inteira */
+    #stream-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Mantém proporção sem cortar */
+      background: #000;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Vídeo que exibirá o stream recebido -->
+  <video id="stream-video" autoplay playsinline></video>
+
+  <!-- Overlay de estado (carregando / aguardando transmissor / erro) -->
+  <div id="overlay">
+    <div class="overlay-icon" id="overlay-icon">⚙️</div>
+    <div id="overlay-title">Inicializando...</div>
+    <div id="overlay-subtitle">Conectando ao servidor de sinalização</div>
+  </div>
+
+  <!-- Badge de status no canto superior direito -->
+  <div id="status-badge">
+    <div class="badge-dot" id="badge-dot"></div>
+    <span id="badge-text">Conectando</span>
+  </div>
+
+  <!-- Socket.io client (CDN) -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <!-- PeerJS client (CDN) -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- Discord Embedded App SDK (CDN via unpkg) -->
+  <script src="https://unpkg.com/@discord/embedded-app-sdk@1.2.0/output/index.js"></script>
+  <!-- Lógica da atividade -->
+  <script src="activity.js"></script>
+</body>
+</html>
