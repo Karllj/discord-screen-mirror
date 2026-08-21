@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,7 +25,11 @@
       --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: var(--font);
@@ -45,7 +50,7 @@
       position: fixed;
       inset: 0;
       background: radial-gradient(ellipse at 20% 50%, rgba(88, 101, 242, 0.12) 0%, transparent 60%),
-                  radial-gradient(ellipse at 80% 20%, rgba(87, 242, 135, 0.06) 0%, transparent 50%);
+        radial-gradient(ellipse at 80% 20%, rgba(87, 242, 135, 0.06) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
     }
@@ -124,7 +129,8 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: none; /* Oculto até o stream começar */
+      display: none;
+      /* Oculto até o stream começar */
     }
 
     .preview-placeholder {
@@ -188,7 +194,9 @@
       transform: none;
     }
 
-    #btn-stop { display: none; }
+    #btn-stop {
+      display: none;
+    }
 
     /* Painel de status */
     .status-panel {
@@ -234,13 +242,31 @@
       flex-shrink: 0;
     }
 
-    .dot.connected { background: var(--accent-success); box-shadow: 0 0 8px var(--accent-success); }
-    .dot.streaming { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1.5s infinite; }
-    .dot.error { background: var(--accent-danger); }
+    .dot.connected {
+      background: var(--accent-success);
+      box-shadow: 0 0 8px var(--accent-success);
+    }
+
+    .dot.streaming {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+
+    .dot.error {
+      background: var(--accent-danger);
+    }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
     }
 
     .peer-id-box {
@@ -256,6 +282,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -313,10 +340,11 @@
   </div>
 
   <!-- Socket.io client (CDN) -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://unpkg.com/socket.io-client@4.7.2/dist/socket.io.min.js"></script>
   <!-- PeerJS client (CDN) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <!-- Lógica de captura -->
   <script src="capture.js"></script>
 </body>
+
 </html>

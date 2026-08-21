@@ -29,7 +29,7 @@
 // SERVER_URL: Endereço do servidor de sinalização.
 // ---------------------------------------------------------------------------
 const CLIENT_ID = '1540198595985281025'; // ← Substitua pelo ID real
-const SERVER_URL = 'http://34.72.160.90';
+const SERVER_URL = 'https://used-backgrounds-electricity-buy.trycloudflare.com';
 
 // ---------------------------------------------------------------------------
 // REFERÊNCIAS AO DOM

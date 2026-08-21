@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,9 +18,14 @@
       --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       overflow: hidden;
@@ -53,11 +59,18 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
-    .overlay-icon.stopped { animation: none; }
+    .overlay-icon.stopped {
+      animation: none;
+    }
 
     #overlay-title {
       font-size: 1.1rem;
@@ -78,7 +91,7 @@
       right: 12px;
       background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 6px 12px;
       font-size: 0.75rem;
@@ -90,7 +103,9 @@
       transition: opacity 0.3s ease;
     }
 
-    #status-badge.visible { opacity: 1; }
+    #status-badge.visible {
+      opacity: 1;
+    }
 
     .badge-dot {
       width: 6px;
@@ -106,8 +121,15 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
     }
 
     /* Elemento de vídeo — ocupa tela inteira */
@@ -116,12 +138,14 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Mantém proporção sem cortar */
+      object-fit: contain;
+      /* Mantém proporção sem cortar */
       background: #000;
       z-index: 5;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Vídeo que exibirá o stream recebido -->
@@ -141,7 +165,7 @@
   </div>
 
   <!-- Socket.io client (CDN) -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://unpkg.com/socket.io-client@4.7.2/dist/socket.io.min.js"></script>
   <!-- PeerJS client (CDN) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <!-- Discord Embedded App SDK (CDN via unpkg) -->
@@ -149,4 +173,5 @@
   <!-- Lógica da atividade -->
   <script src="activity.js"></script>
 </body>
+
 </html>

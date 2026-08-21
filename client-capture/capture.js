@@ -23,7 +23,7 @@
 // CONFIGURAÇÃO
 // Altere SERVER_URL para o endereço do seu servidor em produção.
 // ---------------------------------------------------------------------------
-const SERVER_URL = 'http://34.72.160.90';
+const SERVER_URL = 'https://used-backgrounds-electricity-buy.trycloudflare.com';
 
 // ---------------------------------------------------------------------------
 // ESTADO DA APLICAÇÃO
