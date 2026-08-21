@@ -29,7 +29,8 @@
 // SERVER_URL: Endereço do servidor de sinalização.
 // ---------------------------------------------------------------------------
 const CLIENT_ID = '1540198595985281025'; // ← Substitua pelo ID real
-const SERVER_URL = 'https://used-backgrounds-electricity-buy.trycloudflare.com';
+//const SERVER_URL = 'https://used-backgrounds-electricity-buy.trycloudflare.com';
+const SERVER_URL = '/.proxy/backend';
 
 // ---------------------------------------------------------------------------
 // REFERÊNCIAS AO DOM
@@ -143,10 +144,18 @@ function initConnections() {
     });
 
     // -- PeerJS --
+    //peer = new Peer({
+    //host: 'used-backgrounds-electricity-buy.trycloudflare.com',
+    //port: 443,
+    //path: '/peerjs',
+    //secure: true,
+    //debug: 2,
+    //});
+
     peer = new Peer({
-      host: 'used-backgrounds-electricity-buy.trycloudflare.com',
+      host: window.location.hostname,
       port: 443,
-      path: '/peerjs',
+      path: '/.proxy/backend/peerjs',
       secure: true,
       debug: 2,
     });
