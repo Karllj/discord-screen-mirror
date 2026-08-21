@@ -131,7 +131,13 @@ async function initDiscordSDK() {
 function initConnections() {
   return new Promise((resolve, reject) => {
     // -- Socket.io --
-    socket = io(SERVER_URL);
+    // -- Socket.io --
+    socket = io(SERVER_URL, {
+      transports: ['websocket', 'polling'],
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      timeout: 20000
+    });
 
     socket.on('connect', () => {
       console.log('[Socket.io] Conectado:', socket.id);
