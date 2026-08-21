@@ -144,9 +144,10 @@ function initConnections() {
 
     // -- PeerJS --
     peer = new Peer({
-      host: 'localhost',
-      port: 3000,
+      host: 'used-backgrounds-electricity-buy.trycloudflare.com',
+      port: 443,
       path: '/peerjs',
+      secure: true,
       debug: 2,
     });
 

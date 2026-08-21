@@ -98,10 +98,11 @@ function initSocket() {
 // ---------------------------------------------------------------------------
 function initPeer() {
   peer = new Peer({
-    host: 'localhost',
-    port: 3000,
-    path: '/peerjs', // Deve corresponder ao mount point no server.js
-    debug: 2,        // Nível de log: 0=none, 1=errors, 2=warnings, 3=all
+    host: 'used-backgrounds-electricity-buy.trycloudflare.com',
+    port: 443,
+    path: '/peerjs',
+    secure: true,
+    debug: 2,
   });
 
   // Recebemos nosso ID do servidor PeerJS
