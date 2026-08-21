@@ -189,10 +189,11 @@ function callBroadcaster(broadcasterPeerId) {
   console.log('[PeerJS] Ligando para o transmissor:', broadcasterPeerId);
   showOverlay('📞', 'Conectando...', `Estabelecendo conexão com o transmissor`);
 
-  // Criamos uma chamada de vídeo para o transmissor.
-  // Passamos null como stream pois somos apenas receptores (não enviamos nada).
-  const call = peer.call(broadcasterPeerId, null, {
-    // Opcional: metadados para o transmissor identificar este receptor
+  // Cria um stream vazio (nosso "ticket em branco") para contornar o bloqueio do PeerJS
+  const dummyStream = new MediaStream();
+
+  // Inicia a chamada passando o stream vazio em vez de null
+  const call = peer.call(broadcasterPeerId, dummyStream, {
     metadata: { role: 'viewer', id: peer.id },
   });
 
